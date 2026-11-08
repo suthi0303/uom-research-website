@@ -8,10 +8,20 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-ASSET = Path(__file__).parent / "assets"
+# Support both layouts:
+# 1) images uploaded beside app.py (your current GitHub layout)
+# 2) images stored inside an assets/ folder
+ROOT = Path(__file__).parent
+ASSET = ROOT / "assets" if (ROOT / "assets").is_dir() else ROOT
 
 def img(name):
-    return str(ASSET / name)
+    path = ASSET / name
+    if not path.is_file():
+        raise FileNotFoundError(
+            f"Missing image: {path}. Keep the image beside app.py "
+            "or place it inside an assets/ folder."
+        )
+    return str(path)
 
 st.markdown("""
 <style>
